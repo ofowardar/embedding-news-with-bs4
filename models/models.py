@@ -4,6 +4,7 @@ import requests
 import json
 
 NEWS_URL = "https://www.hurriyet.com.tr/rss/gundem/"
+NEWS_JSON_PATH = "/data/news.json"
 
 
 # News Class 
@@ -49,20 +50,25 @@ class Soup:
         # Dict to JSON
         return json.dumps(list_to_dict,indent=4,ensure_ascii=False)
     
+    def write_news_to_jsonf(self, news_json, path="data/news.json"):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(news_json)
+        print(f"[INFO] JSON dosyası kaydedildi: {path}")
     
     
         
 
 
-# Test Block
-soup_obj = Soup()
-all_page = soup_obj.take_page()
-news = soup_obj.get_news(all_page)
-news_json = soup_obj.return_list_to_json(news_list=news)
+# # Test Block
+# soup_obj = Soup()
+# all_page = soup_obj.take_page()
+# news = soup_obj.get_news(all_page)
+# news_json = soup_obj.return_list_to_json(news_list=news)
 
-# JSON'u ekrana yazdır
-print(news_json)
+# # JSON'u ekrana yazdır
+# print(news_json)
 
-# JSON'u dosyaya kaydetmek istersen
-with open("news.json", "w", encoding="utf-8") as f:
-    f.write(news_json)
+# # JSON'u dosyaya kaydetmek istersen
+# with open("news.json", "w", encoding="utf-8") as f:
+#     f.write(news_json)
