@@ -8,11 +8,11 @@ NEWS_URL = "https://www.hurriyet.com.tr/rss/gundem/"
 
 # News Class 
 class News:
-    def __init__(self,news_id,news_content,news_title,news_url):
+    def __init__(self,news_id,news_content,news_title):
         self.news_id = news_id
         self.news_content = news_content
         self.news_title = news_title
-        self.news_url = news_url
+
 
 
 #Soup Class
@@ -31,17 +31,12 @@ class Soup:
         news_list = []
 
         for idx,item in enumerate(items):
-            title_tag = item.find("title")
-            url_tag = item.find("link")
+            title_tag = item.find("title")           
             description_tag = item.find("description")
-
             title = title_tag.text if title_tag else "Başlık Yok"
-
-            link = url_tag.text if url_tag else ""
-
             content = BeautifulSoup(description_tag.text, "html.parser").get_text(strip=True) if description_tag else ""
 
-            news = News(news_id=idx,news_content=content,news_title=title,news_url=link)
+            news = News(news_id=idx,news_content=content,news_title=title)
             news_list.append(news)
 
             #test
@@ -53,6 +48,8 @@ class Soup:
         list_to_dict = [vars(news) for news in news_list ]
         # Dict to JSON
         return json.dumps(list_to_dict,indent=4,ensure_ascii=False)
+    
+    
     
         
 
