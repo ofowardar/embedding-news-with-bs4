@@ -66,5 +66,5 @@ This project is open source and available under the MIT License.
 
 ---
 
-Created by [ofowardar](https://github.com/ofowardar)
-Contact With Me on LinkedIN [Omer Faruk Ozvardar](https://www.linkedin.com/in/ofowardar)
+- Created by [ofowardar](https://github.com/ofowardar) 
+- Contact With Me on LinkedIN [Omer Faruk Ozvardar](https://www.linkedin.com/in/ofowardar)
