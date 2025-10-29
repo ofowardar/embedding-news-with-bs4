@@ -2,9 +2,11 @@ from bs4 import BeautifulSoup
 import os
 import requests
 import json
+from openai import OpenAI
 
 NEWS_URL = "https://www.hurriyet.com.tr/rss/gundem/"
 NEWS_JSON_PATH = "/data/news.json"
+NEWS_EMBEDDING_PATH = "/data/news_embeded.json"
 
 
 # News Class 
@@ -56,6 +58,58 @@ class Soup:
             f.write(news_json)
         print(f"[INFO] JSON dosyası kaydedildi: {path}")
     
+
+
+class Embedder:
+    def __init__(self,model_name="nomic-embed-text:latest",base_url="http://127.0.0.1:11435/v1",api_key="abcd"):
+        self.model_name = model_name
+        self.base_url = base_url
+        self.api_key = api_key
+        self.client = OpenAI(api_key=self.api_key,base_url=self.base_url)
+
+    def embed_text(self,text:str) -> list:
+        """
+        Sadece 1 adet metni embed eden fonksiyon. Embedding sonucunda matrisi döndürür.
+        """
+
+        resp = self.client.embeddings.create(
+            input=text,
+            model=self.model_name
+        )
+
+        return resp.data[0].embedding
+    
+
+    def embed_news_list(self,news_list:list) -> list:
+        """
+        News objelerinin embeddinglerini alır ve her objeye ekler.
+        """
+        for news in news_list:
+            news.embedding = self.embed_text(news.news_content)
+        return news_list
+    
+    def save_embedings(self,news_list,path=NEWS_EMBEDDING_PATH):
+        """
+        Haberleri Embeddingleri ile birlikte kaydeder. 
+        """
+
+        os.makedirs(os.path.dirname(NEWS_EMBEDDING_PATH),exist_ok=True)
+
+        data_to_save = [
+            {
+                "news_id" : n.news_id,
+                "title" : n.news_title,
+                "content" : n.news_content,
+                "embedding" : n.embedding
+            } for n in news_list
+        ]
+
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data_to_save, f, indent=4, ensure_ascii=False)
+        print(f"[INFO] Embedding JSON kaydedildi: {path}")
+
+
+        
     
         
 
